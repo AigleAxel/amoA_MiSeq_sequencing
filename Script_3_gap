@@ -1,0 +1,60 @@
+#!/bin/bash
+# 2017-09 Axel Aigle
+
+#
+# Script_3_gap
+# 
+# set "list-of-your-samples-names": if your samples are named, list them as "A B C" etc., if your samples are numbered just type {0..n} instead of "list-of-your-samples-names"
+
+for sample in list-of-your-samples-names ; do    
+  gunzip -c ${sample}_F_filt.fastq.gz > ${sample}_R1.fastq
+  gunzip -c ${sample}_R_filt.fastq.gz > ${sample}_R2.fastq
+  seqtk seq -a ${sample}_R1.fastq > ${sample}_R1_1.fasta
+  seqtk seq -a ${sample}_R2.fastq > ${sample}_R2_1.fasta
+  seqtk seq -r ${sample}_R2_1.fasta > ${sample}_R2_2.fasta
+  fasta2tab ${sample}_R1_1.fasta > ${sample}_R1_1.tab
+  fasta2tab ${sample}_R2_2.fasta > ${sample}_R2_2.tab
+  awk -F "\t" '{print $1}' ${sample}_R1_1.tab > ${sample}_R1_2.tab
+  awk 'BEGIN {FS="/t" } NR { $1=NR} { print}' ${sample}_R1_2.tab > ${sample}_R1_3.tab
+  sed 's/^/AOA-'${sample}'-/' ${sample}_R1_3.tab > ${sample}_R1_4.tab
+  awk -F "\t" '{print $2}' ${sample}_R1_1.tab > ${sample}_R1_5.tab
+  awk -F "\t" '{print $2}' ${sample}_R2_2.tab > ${sample}_R2_3.tab
+  paste ${sample}_R1_5.tab ${sample}_R2_3.tab > ${sample}_1.tab
+  sed 's/\t//g' ${sample}_1.tab > ${sample}_2.tab
+  paste ${sample}_R1_4.tab ${sample}_2.tab > ${sample}_reads.tab
+  tab2fasta ${sample}_reads.tab > ${sample}_reads.fasta
+  usearch -cluster_fast ${sample}_reads.fasta -id 1 -centroids ${sample}_reads_id_1.fasta -sizeout
+  transeq -sequence ${sample}_reads_id_1.fasta -outseq ${sample}_reads_id_1_1.fasta -frame 3 -table 11 -clean
+  grep -v X ${sample}_reads_id_1_1.fasta > ${sample}_reads_id_1_2.fasta
+  usearch -fastx_truncate ${sample}_reads_id_1_2.fasta -trunclen 133 -fastaout ${sample}_reads_id_1_3.fasta
+  fasta2tab ${sample}_reads_id_1_3.fasta > ${sample}_reads_id_1_4.tab
+  awk -F '\t' '{print $1}' ${sample}_reads_id_1_4.tab > ${sample}_reads_id_1_5.tab
+  sed 's/_3//' ${sample}_reads_id_1_5.tab > ${sample}_reads_id_1_6.tab
+  fasta2tab ${sample}_reads_id_1.fasta > ${sample}_reads_id_1.tab
+  awk -F '\t' '{print $2, $1}' OFS='\t' ${sample}_reads_id_1.tab > ${sample}_reads_id_1_2.tab
+  awk 'NR==FNR {h[$2] = $1; next} {print $1, h[$1]}' OFS='\t' ${sample}_reads_id_1_2.tab ${sample}_reads_id_1_6.tab > ${sample}_trans_reads_id_1.tab
+  tab2fasta ${sample}_trans_reads_id_1.tab > ${sample}_trans_reads_id_1.fasta
+  usearch -unoise3 ${sample}_trans_reads_id_1.fasta -zotus ${sample}_zotus.fasta -tabbedout ${sample}_unoise3.txt -minsize 2
+  fasta2tab ${sample}_zotus.fasta > ${sample}_zotus.tab
+  sed 's/Zotu/amp/' ${sample}_zotus.tab > ${sample}_zotus_1.tab
+  awk -F '\t' '{print $1, $3}' OFS='\t' ${sample}_unoise3.txt > ${sample}_unoise3_1.tab
+  awk 'NR==FNR {h[$2] = $1; next} {print $1, h[$1]}' OFS='\t' ${sample}_unoise3_1.tab ${sample}_zotus_1.tab > ${sample}_list_non_singletons.tab
+  awk -F '\t' '{print $2}' ${sample}_list_non_singletons.tab > ${sample}_list_non_singletons_1.tab
+  fasta2tab ${sample}_trans_reads_id_1.fasta > ${sample}_valids_reads_id_1.tab
+  awk -F '\t' '{print $2, $1}' OFS='\t' ${sample}_valids_reads_id_1.tab > ${sample}_valids_reads_id_1_1.tab
+  awk 'NR==FNR {h[$2] = $1; next} {print $1, h[$1]}' OFS='\t' ${sample}_valids_reads_id_1_1.tab ${sample}_list_non_singletons_1.tab > ${sample}_Reads_non_singletons.tab
+  tab2fasta ${sample}_Reads_non_singletons.tab > ${sample}_Reads_non_singletons_gap.fasta
+  rm ${sample}_R1_*.*
+  rm ${sample}_R2_*.*
+  rm ${sample}_reads.fasta  
+  mkdir Intermediate_reads
+  mkdir DADA2_filtered
+  mv ${sample}_*.fastq.gz DADA2_filtered
+  rm ${sample}_R*.fastq
+  rm ${sample}_reads_id_1_*.fasta
+  rm ${sample}_zotus.fasta
+  mv ${sample}_reads_id_1.fasta Intermediate_reads
+  mv ${sample}_trans_reads_id_1.fasta Intermediate_reads
+  rm *.tab
+  rm *.txt
+done

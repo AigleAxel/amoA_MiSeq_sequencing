@@ -1,0 +1,20 @@
+#!/bin/bash
+# 2019-04  Axel Aigle
+
+#
+# Script_1
+#
+# set "list-of-your-samples-names": if your samples are named, list them between "in" and ";" as SampleA SampleB SampleC etc., if your samples are numbered just type {0..n} between "in" and ";"
+# --clip_R1 21 --clip_R2 22 : for AOB amoA assembly
+# --clip_R1 22 --clip_R2 21 : for AOA amoA gap 
+
+for sample in list-of-your-samples-names ; do
+  trim_galore -a TCGTGGGCAGCGTCAGATGTGT -a2 GTCTCGTGGGCTCGGAGATGTGTATAAGAGACAG -q 15 --paired --clip_R1 21 --clip_R2 22 ${sample}_R1.fastq ${sample}_R2.fastq
+  mkdir fastq
+  mkdir cutadapt_before_DADA2
+  rm *.txt
+  mv ${sample}_R2_val_2.fq cutadapt_before_DADA2
+  mv ${sample}_R1_val_1.fq cutadapt_before_DADA2
+  mv ${sample}_R1.fastq fastq
+  mv ${sample}_R2.fastq fastq
+done
