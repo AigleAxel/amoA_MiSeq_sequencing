@@ -1,4 +1,5 @@
-# -assembly-and-gap-pipeline-
+# -assembly-and-gap-pipelines-
+
 Existing tools based ‘assembly pipeline’ and ‘gap pipeline’ for paired-end MiSeq Illumina reads
 
 Those existing tools based pipelines were designed to assemble paired-end V3 MiSeq Illumina reads (2x300 bp) for functional genes with critical length (up to 490 bp, primers gene specific included for the ‘assembly pipeline’ and larger than 490 bp (set for 620 bp, primers gene specific included) for the ‘gap pipeline’). 
