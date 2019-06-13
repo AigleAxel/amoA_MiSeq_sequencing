@@ -1,0 +1,40 @@
+#!/bin/bash
+# 2017-01-25  Axel Aigle
+
+#
+# Map_AOB_to_clusters_name 
+#
+# install BLAST+ from https://www.ncbi.nlm.nih.gov/books/NBK279671/
+# Make database (at the roots)
+# bin/makeblastdb -in ./path/to/the/directory/Database_amoA_AOB_assembly_with_cluster_name_and_Nitrosospira_ref.fasta -input_type fasta -dbtype nucl -title amoA_AOB 
+#
+# set "list-of-your-samples-names": if your samples are named, list them between "in" and ";" as SampleA SampleB SampleC etc., if your samples are numbered just type {0..n} between "in" and ";"
+#
+# Ensure that you have the List_AOB_Cluster.tab in your directory
+# When the script is completed, type: paste List_AOB_Cluster_with_header.tab Blast_AOB_assembly_ref_cluster_DB_*_10.tab > AOB_map_to_cluster_name.tab
+
+for sample in list-of-your-samples-names ; do  
+  blastn -max_target_seqs 1 -query ${sample}_Reads_non_singletons.fasta -db Database_amoA_AOB_assembly_with_cluster_name_and_Nitrosospira_ref.fasta -outfmt 6 > Blast_AOB_assembly_ref_cluster_DB_${sample}.tab
+  awk -F '[\t]' '{print $2}' OFS='\t' Blast_AOB_assembly_ref_cluster_DB_${sample}.tab > Blast_AOB_assembly_ref_cluster_DB_${sample}_1.tab
+  awk -F '[_]' '{print $1}' Blast_AOB_assembly_ref_cluster_DB_${sample}_1.tab > Blast_AOB_assembly_ref_cluster_DB_${sample}_2.tab
+  awk -F '[;]' '{print $2}' Blast_AOB_assembly_ref_cluster_DB_${sample}.tab > Blast_AOB_assembly_ref_cluster_DB_${sample}_3.tab
+  awk -F '[=]' '{print $2}' Blast_AOB_assembly_ref_cluster_DB_${sample}_3.tab > Blast_AOB_assembly_ref_cluster_DB_${sample}_4.tab
+  paste Blast_AOB_assembly_ref_cluster_DB_${sample}_2.tab Blast_AOB_assembly_ref_cluster_DB_${sample}_4.tab > Blast_AOB_assembly_ref_cluster_DB_${sample}_5.tab
+  awk '{sums[$1] += $2} END { for (i in sums) printf("%s %s\n", i, sums[i])}' Blast_AOB_assembly_ref_cluster_DB_${sample}_5.tab > Blast_AOB_assembly_ref_cluster_DB_${sample}_6.tab
+  awk -F " " '{print $2, $1}' OFS='\t' Blast_AOB_assembly_ref_cluster_DB_${sample}_6.tab > Blast_AOB_assembly_ref_cluster_DB_${sample}_7.tab
+  awk 'NR==FNR {h[$2] = $1; next} {print $1, h[$1]}' OFS='\t' Blast_AOB_assembly_ref_cluster_DB_${sample}_7.tab List_AOB_Cluster.tab > Blast_AOB_assembly_ref_cluster_DB_${sample}_8.tab
+  sed '1i Match_base_id\tAbundances-AOB-'${sample}'' Blast_AOB_assembly_ref_cluster_DB_${sample}_8.tab > Blast_AOB_assembly_ref_cluster_DB_${sample}_9.tab
+  sed '1i Match_base_id' List_AOB_Cluster.tab > List_AOB_Cluster_with_header.tab
+  awk -F "\t" '{print $2}' Blast_AOB_assembly_ref_cluster_DB_${sample}_9.tab > Blast_AOB_assembly_ref_cluster_DB_${sample}_10.tab
+  rm Blast_AOB_assembly_ref_cluster_DB_${sample}_1.tab
+  rm Blast_AOB_assembly_ref_cluster_DB_${sample}_2.tab
+  rm Blast_AOB_assembly_ref_cluster_DB_${sample}_3.tab
+  rm Blast_AOB_assembly_ref_cluster_DB_${sample}_4.tab
+  rm Blast_AOB_assembly_ref_cluster_DB_${sample}_5.tab
+  rm Blast_AOB_assembly_ref_cluster_DB_${sample}_6.tab
+  rm Blast_AOB_assembly_ref_cluster_DB_${sample}_7.tab
+  rm Blast_AOB_assembly_ref_cluster_DB_${sample}_8.tab
+  rm Blast_AOB_assembly_ref_cluster_DB_${sample}_9.tab
+done
+
+
