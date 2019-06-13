@@ -28,7 +28,7 @@ Important parameters that you may have to set according to your dataset:
 
 #Script_1: for both ‘assembly’ and ‘gap’ pipeline: trimming step: set --clip_R1 and --clip_R2 according to your primers size (we recommend to remove the totality of the forward and reverse primers). Important recommendation: for the ‘gap pipeline’, you will need to ensure that your forward and reverse reads get the same reading frame. Advice: use ‘seqtk seq -a sample-R1.fastq > sample-R1.fasta’ and ‘seqtk seq -a sample-R2.fastq > sample-R2.fasta’ followed by ‘transeq -sequence sample-R1.fasta -outseq sample-R1-translated.fasta -frame 1, 2 or 3 -table 11 -clean’ and  ‘transeq -sequence sample-R2.fasta -outseq sample-R2-translated.fasta -frame 1, 2 or 3 -table 11 -clean’ to check your forward and reverse reads reading frame. Correct your forward and/or reverse reading frame by adding or removing 1 or 2 bases from --clip_R1/R2. 
 
-Optional recommendation: if R is not installed on Linux, use ‘tar -czvf trimmed-reads-to-be-cleaned.tar.gz /path/to/directory/trimmed/reads’ to transfer your files from Linux to Windows (and from Windows to Linux). 
+Optional recommendation: if R is not installed on Linux, use ‘tar -czvf trimmed-reads-to-be-cleaned.tar.gz ./path/to/directory/trimmed/reads’ to transfer your files from Linux to Windows (and from Windows to Linux). 
 
 #Script_2: Cleaning and forward/reverse reads size selection: (1) ‘assembly pipeline’: ensure at least 10 bp overlapping between your forward and your reverse reads (truncLen and minLen options) (2) ‘gap pipeline’: truncLen=c(200,200) and minLen = 200 are advised
 
