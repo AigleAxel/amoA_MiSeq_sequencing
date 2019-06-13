@@ -1,4 +1,4 @@
-# -MiSeq-assembly-and-gap-pipelines-
+# amoA_MiSeq_sequencing
 
 Existing tools based ‘assembly pipeline’ and ‘gap pipeline’ for paired-end MiSeq Illumina reads
 
