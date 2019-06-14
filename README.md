@@ -35,19 +35,19 @@ Optional recommendation: if R is not installed on Linux, use ‘tar -czvf trimme
 
 #Script_2: Cleaning and forward/reverse reads size selection: (1) ‘assembly pipeline’: ensure at least 10 bp overlapping between your forward and your reverse reads (truncLen and minLen options) (2) ‘gap pipeline’: truncLen=c(200,200) and minLen = 200 are advised.
 
-#Script_3_assembly: 
-Assembly: no recommendation
-Assembled reads size selection: set -trunclen according to your expected final amplicons size
-Reads names: in our script, reads are renamed as ‘>AOB-sample-name-1 to n’, you can change ‘AOB’ into ‘your-tag’: row 9: sed 's/^/>your- tag-'${sample}'-/’, and row 19: sed 's/your-tag/>your-tag/'
-Dereplication: no recommendation
-Translation check: set the reading frame (-frame 1, 2 or 3) according to your amplicons reading frame. Advice: use ‘transeq -sequence reads-to-translate.fasta -outseq translated-reads.fasta -frame 1, 2 or 3 -table 11 -clean’ to check your amplicons reading frame.
+#Script_3_assembly:
+Assembly: no recommendation;
+Assembled reads size selection: set -trunclen according to your expected final amplicons size;
+Reads names: in our script, reads are renamed as ‘>AOB-sample-name-1 to n’, you can change ‘AOB’ into ‘your-tag’: row 9: sed 's/^/>your- tag-'${sample}'-/’, and row 19: sed 's/your-tag/>your-tag/';
+Dereplication: no recommendation;
+Translation check: set the reading frame (-frame 1, 2 or 3) according to your amplicons reading frame. Advice: use ‘transeq -sequence reads-to-translate.fasta -outseq translated-reads.fasta -frame 1, 2 or 3 -table 11 -clean’ to check your amplicons reading frame;
 Chimera and singletons removal: optional recommendation: set the singletons removal minimum abundance (-minsize) to a value that suit your experimental design and questions.   
 
-#Script_3_gap: 
-Merge forward and reverse reads: no recommendation
-Reads names: in our script, reads are renamed as ‘>AOA-sample-name-1 to n’, you can change ‘AOA’ into ‘your-tag’: row 10: sed 's/^/>your- tag-'${sample}'-/' 
-Dereplication: no recommendation
-Translation check: set the reading frame (-frame 1, 2 or 3) according to your amplicons reading frame (see Script_1 for more recommendation). 
+#Script_3_gap:
+Merge forward and reverse reads: no recommendation;
+Reads names: in our script, reads are renamed as ‘>AOA-sample-name-1 to n’, you can change ‘AOA’ into ‘your-tag’: row 10: sed 's/^/>your- tag-'${sample}'-/';
+Dereplication: no recommendation;
+Translation check: set the reading frame (-frame 1, 2 or 3) according to your amplicons reading frame (see Script_1 for more recommendation);
 Chimera and singletons removal: optional recommendation: set the singletons removal minimum abundance (-minsize) to a value that suit your experimental design and question(s).   
 
 Optional:
