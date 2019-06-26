@@ -47,6 +47,7 @@ for sample in list-of-your-samples-names ; do
     awk 'NR==FNR {h[$2] = $1; next} {print $1, h[$1]}' OFS='\t' ${sample}_valids_reads_id_1_1.tab ${sample}_list_non_singletons_1.tab > ${sample}_Reads_non_singletons.tab
     tab2fasta ${sample}_Reads_non_singletons.tab > ${sample}_Reads_non_singletons.fasta
     mkdir Intermediate_reads
+    mkdir DADA2_filtered
     rm *.tab
     rm *.txt
     rm ${sample}-assembly.fasta
