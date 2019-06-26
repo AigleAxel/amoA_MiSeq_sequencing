@@ -12,7 +12,7 @@
 # set "list-of-your-samples-names": if your samples are named, list them between "in" and ";" as SampleA SampleB SampleC etc., if your samples are numbered just type {0..n} between "in" and ";"
 #
 # Ensure that you have the List_AOA_Cluster.tab in your directory
-# When the script is completed, type: paste List_AOA_Cluster_with_header.tab Calcul_Blast_AOA_gap_cluster_DB_*.tab > AOA_map_to_cluster_name.tab
+# When the script is completed, type: cd ./Map_AOA_to_clusters_names and: paste List_AOA_Cluster_with_header.tab Calcul_Blast_AOA_gap_cluster_DB_*.tab > AOA_map_to_cluster_name.tab
 
 
 for sample in list-of-your-samples-names ; do
@@ -33,6 +33,7 @@ for sample in list-of-your-samples-names ; do
   mkdir Map_AOA_to_clusters_names
   mv Blast_AOA_gap_cluster_DB_${sample}.tab Blast_db
   mv Calcul_Blast_AOA_gap_cluster_DB_${sample}.tab Map_AOA_to_clusters_names
+  mv List_AOA_Cluster_with_header.tab Map_AOA_to_clusters_names
 done
 
 
