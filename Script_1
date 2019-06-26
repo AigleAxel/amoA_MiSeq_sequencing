@@ -13,6 +13,8 @@ for sample in list-of-your-samples-names ; do
   mkdir fastq
   mkdir cutadapt_before_DADA2
   rm *.txt
+  mkdir cutadapt_before_DADA2
+  mkdir fastq
   mv ${sample}_R2_val_2.fq cutadapt_before_DADA2
   mv ${sample}_R1_val_1.fq cutadapt_before_DADA2
   mv ${sample}_R1.fastq fastq
